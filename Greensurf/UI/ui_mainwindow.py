@@ -1,3 +1,4 @@
+import os
 # -*- coding: utf-8 -*-
 
 ################################################################################
@@ -158,7 +159,7 @@ class Ui_MainWindow(object):
 
         self.label_8 = QLabel(self.centralwidget)
         self.label_8.setObjectName(u"label_8")
-        self.label_8.setPixmap(QPixmap(u"C:/Users/ouilh/OneDrive/Documents/Projet_E3/Greensurf/UI/assets/tgv.png"))
+        self.label_8.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), "assets/tgv.png")))
         self.label_8.setScaledContents(False)
         self.label_8.setAlignment(Qt.AlignCenter)
 
@@ -166,7 +167,7 @@ class Ui_MainWindow(object):
 
         self.label_9 = QLabel(self.centralwidget)
         self.label_9.setObjectName(u"label_9")
-        self.label_9.setPixmap(QPixmap(u"C:/Users/ouilh/OneDrive/Documents/Projet_E3/Greensurf/UI/assets/avion.png"))
+        self.label_9.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), "assets/avion.png")))
         self.label_9.setScaledContents(False)
         self.label_9.setAlignment(Qt.AlignCenter)
 
@@ -174,7 +175,7 @@ class Ui_MainWindow(object):
 
         self.label_5 = QLabel(self.centralwidget)
         self.label_5.setObjectName(u"label_5")
-        self.label_5.setPixmap(QPixmap(u"C:/Users/ouilh/OneDrive/Documents/Projet_E3/Greensurf/UI/assets/auto.png"))
+        self.label_5.setPixmap(QPixmap(os.path.join(os.path.dirname(__file__), "assets/auto.png")))
         self.label_5.setScaledContents(False)
         self.label_5.setAlignment(Qt.AlignCenter)
 

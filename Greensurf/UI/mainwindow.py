@@ -2,7 +2,7 @@
 import sys
 from datetime import timedelta
 from PySide6.QtWidgets import QApplication, QMainWindow
-from PyQt6 import QtCore
+from PySide6 import QtCore
 from PySide6.QtGui import QIcon
 from ui_mainwindow import Ui_MainWindow
 import psutil

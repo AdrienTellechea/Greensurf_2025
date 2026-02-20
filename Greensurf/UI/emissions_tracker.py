@@ -19,8 +19,7 @@ from codecarbon.core.emissions import Emissions
 from codecarbon.core.units import Energy, Power, Time
 from codecarbon.core.util import count_cpus, suppress
 from codecarbon.external.geography import CloudMetadata, GeoMetadata
-from codecarbon.external.hardware import CPU, GPU
-from codecarbon.external.ram import RAM
+from codecarbon.external.hardware import CPU, GPU, RAM
 from codecarbon.external.logger import logger, set_logger_format, set_logger_level
 from codecarbon.external.scheduler import PeriodicScheduler
 from codecarbon.input import DataSource
@@ -254,12 +253,12 @@ class BaseEmissionsTracker(ABC):
         # Hardware detection
         if gpu.is_gpu_details_available():
             self._hardware.append(GPU.from_utils(self._gpu_ids))
-            gpu_names = [n["name"] for n in gpu.get_gpu_static_info()]
+            gpu_names = [n["name"] for n in gpu.AllGPUDevices().get_gpu_static_info()]
             gpu_names_dict = Counter(gpu_names)
             self._conf["gpu_model"] = "".join(
                 [f"{i} x {name}" for name, i in gpu_names_dict.items()]
             )
-            self._conf["gpu_count"] = len(gpu.get_gpu_static_info())
+            self._conf["gpu_count"] = len(gpu.AllGPUDevices().get_gpu_static_info())
         else:
             logger.info("No GPU found.")
 
@@ -319,10 +318,7 @@ class BaseEmissionsTracker(ABC):
 
         if self._save_to_file:
             self.persistence_objs.append(
-                FileOutput(
-                    os.path.join(self._output_dir, self._output_file),
-                    self._on_csv_write,
-                )
+                FileOutput(self._output_file, self._output_dir, self._on_csv_write)
             )
 
         if self._save_to_logger:
@@ -383,7 +379,7 @@ class BaseEmissionsTracker(ABC):
         for persistence in self.persistence_objs:
             if isinstance(persistence, CodeCarbonAPIOutput):
                 emissions_data = self._prepare_emissions_data(delta=True)
-            persistence.out(emissions_data)
+            persistence.out(emissions_data, emissions_data)
 
         return emissions_data.emissions
 
@@ -410,7 +406,7 @@ class BaseEmissionsTracker(ABC):
             if isinstance(persistence, CodeCarbonAPIOutput):
                 emissions_data = self._prepare_emissions_data(delta=True)
 
-            persistence.out(emissions_data)
+            persistence.out(emissions_data, emissions_data)
 
         self.final_emissions_data = emissions_data
         self.final_emissions = emissions_data.emissions
@@ -445,6 +441,8 @@ class BaseEmissionsTracker(ABC):
             timestamp=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
             project_name=self._project_name,
             run_id=str(self.run_id),
+            experiment_id=str(self.run_id),
+            codecarbon_version="2.7.2",
             duration=duration.seconds,
             emissions=emissions,
             emissions_rate=emissions * 1000 / duration.seconds,  # g/s
